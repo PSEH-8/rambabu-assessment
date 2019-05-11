@@ -2,6 +2,7 @@ package com.sapient.np.controller;
 
 import com.sapient.np.model.Article;
 import com.sapient.np.model.NewsResponseWrapper;
+import com.sapient.np.service.NewsApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,9 @@ public class WebController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private NewsApiService newsApiService;
+
     @RequestMapping(value = "/news", method = RequestMethod.GET)
     public String home() {
         return "home";
@@ -34,27 +38,8 @@ public class WebController {
                          Model model) throws UnknownHostException {
         System.out.println("category = " +  category + " country = " + country
                 + " keyword = " + keyword);
-        NewsResponseWrapper wrapper = restTemplate
-                .getForObject("http://localhost:8080/news/" + category + "/" + country,
-                        NewsResponseWrapper.class);
 
-        List<Article> articles = wrapper.getArticles();
-        //System.out.println("articles: " + articles);
-
-        model.addAttribute("category", category);
-        model.addAttribute("country", country);
-        model.addAttribute("keyword", keyword);
-
-        List<Article> newArticles = new ArrayList<>();
-        for (Article article : articles) {
-            System.out.println("article: " + article);
-            if (article.toString().contains(keyword)) {
-                newArticles.add(article);
-            }
-        }
-        System.out.println("new articles = " + newArticles);
-
-        model.addAttribute("articles", newArticles);
+        newsApiService.getFilteredArticles(category, country, keyword, model);
 
         return "result";
     }
