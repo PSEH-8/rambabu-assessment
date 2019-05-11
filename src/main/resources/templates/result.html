@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href = "css/styles.css" rel = "stylesheet"/>
+    <title>Results page</title>
+</head>
+<body>
+
+<h2>Results</h2>
+<table>
+    <tr>
+        <th>Country</th>
+        <th>Category</th>
+        <th>Filter Keyword</th>
+        <th>News Title</th>
+        <th>Description</th>
+        <th>Source News URL</th>
+    </tr>
+    <tr th:each="article, iterationStatus : ${articles}">
+        <td th:text="${country}"></td>
+        <td th:text="${category}"></td>
+        <td th:text="${keyword}"></td>
+        <td th:text="${article.getTitle()}"></td>
+        <td th:text="${article.getDescription()}"></td>
+        <td th:text="${article.getUrl()}"></td>
+    </tr>
+</table>
+
+</body>
+</html>
