@@ -20,26 +20,25 @@ public class NewsApiService {
         this.restTemplate = restTemplate;
     }
 
-    public NewsApiResponse findArticlesByCategoryAndCountry(String category,
+    public NewsResponseWrapper findArticlesByCategoryAndCountry(String category,
                                                             String country) {
         final String url = "https://newsapi.org/v2/top-headlines";
         NewsApiResponse response = restTemplate.getForObject(url + "?category=" + category
                 + "&country=" + country + "&apiKey=" + apiKey, NewsApiResponse.class);
-        return response;
+
+        NewsResponseWrapper newsResponseWrapper =
+                new NewsResponseWrapper(category, country, response.getArticles());
+
+        return newsResponseWrapper;
     }
 
     public void getFilteredArticles(String category, String country,
                                      String keyword, Model model) {
-        NewsResponseWrapper wrapper = restTemplate
-                .getForObject("http://localhost:8080/news/" + category + "/"
-                                + country, NewsResponseWrapper.class);
+
+        NewsResponseWrapper wrapper = findArticlesByCategoryAndCountry(category, country);
 
         List<Article> articles = wrapper.getArticles();
         //System.out.println("articles: " + articles);
-
-        model.addAttribute("category", category);
-        model.addAttribute("country", country);
-        model.addAttribute("keyword", keyword);
 
         List<Article> newArticles = new ArrayList<>();
         for (Article article : articles) {
@@ -50,6 +49,9 @@ public class NewsApiService {
         }
         System.out.println("new articles = " + newArticles);
 
+        model.addAttribute("category", category);
+        model.addAttribute("country", country);
+        model.addAttribute("keyword", keyword);
         model.addAttribute("articles", newArticles);
     }
 

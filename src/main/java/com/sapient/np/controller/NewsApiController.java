@@ -22,9 +22,8 @@ public class NewsApiController {
     @GetMapping("/news/{category}/{country}")
     public NewsResponseWrapper news(@PathVariable("category") String category,
                           @PathVariable("country") String country) {
-        NewsApiResponse response = newsApiService
+        NewsResponseWrapper newsResponseWrapper = newsApiService
                 .findArticlesByCategoryAndCountry(category, country);
-        NewsResponseWrapper newsResponseWrapper = new NewsResponseWrapper(category, country, response.getArticles());
 
         return newsResponseWrapper;
     }
